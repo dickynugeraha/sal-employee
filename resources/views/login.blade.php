@@ -5,6 +5,14 @@
         <title>{{ $title ?? "Salary Employee" }}</title>
     </head>
     <body style="overflow-x:hidden;">
+      <script>
+        let msg = '{{Session::get('alert')}}';
+        let exist = '{{Session::has('alert')}}';
+      
+        if (exist){
+          alert(msg);
+        }
+       </script>
       <div class="row justify-content-center align-items-center" style="height: 90vh;">
         <div class="card col-md-4 p-4">
           <form action="/login" method="post">
