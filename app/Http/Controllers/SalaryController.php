@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Salary;
 use App\Http\Requests\StoreSalaryRequest;
 use App\Http\Requests\UpdateSalaryRequest;
+use App\Models\Employee;
 
 class SalaryController extends Controller
 {
@@ -15,7 +16,10 @@ class SalaryController extends Controller
      */
     public function index()
     {
-        //
+        $salaries = Salary::all();
+        $employees = Employee::with("position")->get();
+
+        return view("salary.index", compact("salaries", "employees"));
     }
 
     /**
@@ -36,7 +40,23 @@ class SalaryController extends Controller
      */
     public function store(StoreSalaryRequest $request)
     {
-        //
+        $employee = Employee::where("id", "=", $request->employee_id)->first();
+
+        $totalSalary =
+            $employee->basic_salary +
+            ($employee->basic_salary * $employee->position->bonus) -
+            ($employee->basic_salary * 0.05);
+
+        Salary::create([
+            "employee_id" => $request->employee_id,
+            "position_title" => $employee->position->title,
+            "position_bonus" => $employee->position->bonus,
+            "month" => $request->month,
+            "year" => $request->year,
+            "total_salary" => $totalSalary,
+        ]);
+
+        return redirect()->back()->with("alert", "Successfully add salary !");
     }
 
     /**
@@ -70,7 +90,6 @@ class SalaryController extends Controller
      */
     public function update(UpdateSalaryRequest $request, Salary $salary)
     {
-        //
     }
 
     /**
@@ -79,8 +98,10 @@ class SalaryController extends Controller
      * @param  \App\Models\Salary  $salary
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Salary $salary)
+    public function destroy($id)
     {
-        //
+        Salary::where("id", "=", $id)->delete();
+
+        return redirect()->back()->with("alert", "Successfully delete salary !");
     }
 }

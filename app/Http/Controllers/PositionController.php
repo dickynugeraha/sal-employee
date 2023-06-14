@@ -15,7 +15,9 @@ class PositionController extends Controller
      */
     public function index()
     {
-        //
+        $positions = Position::all();
+
+        return view("position.index", compact("positions"));
     }
 
     /**
@@ -36,7 +38,12 @@ class PositionController extends Controller
      */
     public function store(StorePositionRequest $request)
     {
-        //
+        Position::create([
+            "title" => $request->title,
+            "bonus" => $request->bonus,
+        ]);
+
+        return redirect()->back()->with("alert", "Successfully add position !");
     }
 
     /**
@@ -70,7 +77,12 @@ class PositionController extends Controller
      */
     public function update(UpdatePositionRequest $request, Position $position)
     {
-        //
+        Position::where("id", "=", $request->position_id)->update([
+            "title" => $request->title,
+            "bonus" => $request->bonus,
+        ]);
+
+        return redirect()->back()->with("alert", "Successfully update position !");
     }
 
     /**
@@ -79,8 +91,10 @@ class PositionController extends Controller
      * @param  \App\Models\Position  $position
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Position $position)
+    public function destroy($id)
     {
-        //
+        Position::where("id", "=", $id)->delete();
+
+        return redirect()->back()->with("alert", "Successfully update position !");
     }
 }

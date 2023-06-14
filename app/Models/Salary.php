@@ -11,6 +11,8 @@ class Salary extends Model
 
     protected $fillable = [
         "employee_id",
+        "position_title",
+        "position_bonus",
         "total_salary",
         "month",
         "year",

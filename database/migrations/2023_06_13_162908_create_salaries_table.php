@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
             $table->bigInteger("employee_id")->unsigned();
+            $table->string("position_title", 30);
+            $table->double("position_bonus", 10, 2);
             $table->double("total_salary", 10, 2);
             $table->tinyInteger("month");
             $table->smallInteger("year");
