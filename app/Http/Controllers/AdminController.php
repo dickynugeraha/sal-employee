@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Http\Requests\StoreAdminRequest;
 use App\Http\Requests\UpdateAdminRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -15,7 +18,29 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        Admin::create([
+            "email" => "admin@gmail.com",
+            "password" => Hash::make("123"),
+        ]);
+    }
+
+    public function login(Request $input)
+    {
+        $admin = Admin::where("email", $input->email)->first();
+
+        if ($admin === null) {
+            return redirect()->back()->with('alert', 'User not found, please registration!');
+        }
+        if ($admin && !Hash::check($input->password, $admin->password)) {
+            return redirect()->back()->with('alert', 'Password incorrect!');
+        }
+        if (!($admin && Hash::check($input->password, $admin->password))) {
+            return redirect()->back()->with('alert', 'Unauthenticated!');
+        }
+
+        Session::put('adminId', $admin->id);
+
+        return redirect('/employees');
     }
 
     /**
