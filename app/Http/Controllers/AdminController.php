@@ -29,7 +29,7 @@ class AdminController extends Controller
         $admin = Admin::where("email", $input->email)->first();
 
         if ($admin === null) {
-            return redirect()->back()->with('alert', 'User not found, please registration!');
+            return redirect()->back()->with('alert', 'User not found!');
         }
         if ($admin && !Hash::check($input->password, $admin->password)) {
             return redirect()->back()->with('alert', 'Password incorrect!');

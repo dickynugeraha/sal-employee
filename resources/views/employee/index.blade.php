@@ -3,7 +3,8 @@
 @section('content_admin')
 <h3 class="text-center my-3">EMPLOYEES</h3>
 <div class="mb-4">
-  <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddEmployee" style="text-decoration:none"><i class="fa fa-plus me-2"></i> Add position</a>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddEmployee" style="text-decoration:none">
+    <i class="fa fa-plus me-2"></i> Add employee</a>
 </div>
  <script>
   let msg = '{{Session::get('alert')}}';
@@ -55,7 +56,7 @@
                 <input type="number" name="basic_salary" id="basic_salary" class="form-control" required>
               </div>
               <div class="mb-2">
-                <label for="position" class="form-label">Basic Salary</label>
+                <label for="position" class="form-label">Position</label>
                 <select class="form-select" name="position_id" id="position">
                   @foreach ($positions as $position)
                       <option value="{{$position->id}}">{{ $position->title }}</option>
@@ -83,6 +84,7 @@
           <th>No</th>
           <th>NIK</th>
           <th>Name</th>
+          <th>Position</th>
           <th>Email</th>
           <th>Address</th>
           <th>Age</th>
@@ -90,7 +92,6 @@
           <th>Nomor Rekening</th>
           <th>Basic Salary</th>
           <th>Photo</th>
-          <th>Position</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -101,6 +102,7 @@
             <td>{{$nomor}}</td>
             <td>{{$employee->nik}}</td>
             <td>{{$employee->name}}</td>
+            <td>{{$employee->position->title}}</td>
             <td>{{$employee->email}}</td>
             <td>{{$employee->address}}</td>
             <td>{{$employee->age}}</td>
@@ -110,7 +112,6 @@
             <td>
               <img class="rounded" width="120px" height="120px" src="/uploads/photo/{{$employee->photo}}" alt="Photo product" srcset="">
             </td>
-            <td>{{$employee->position->title}}</td>
             <td>
               <a data-bs-toggle="modal" data-bs-target="#exampleModal{{$employee->id}}" class="text-decoration-none me-2" href="/"> Edit</a>
               <a class="text-decoration-none" href="/employee/{{$employee->id}}/delete"> Delete</a>

@@ -1,11 +1,29 @@
 @extends('layouts.admin_view')
 
 @section('content_admin')
+<?php $yearNow = date("Y") ?>
 <h3 class="text-center my-3">SALARIES</h3>
-<div class="mb-4">
-  <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddSalary" style="text-decoration:none">
-    <i class="fa fa-plus me-2"></i> Add salary</a>
-</div>
+  <div class="mb-3">
+    <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddSalary" style="text-decoration:none">
+      <i class="fa fa-plus me-2"></i> Add salary
+    </a>
+  </div>
+  <div class="card mb-3" style="width: 15rem">
+    <div class="card-header text-center">
+      <h5>Export as pdf</h5>
+    </div>
+    <div class="card-body">
+      <form action="salary/export" method="get">
+        <div class="d-flex justify-content-end">
+          <input min="1" max="12" type="number" placeholder="Month" name="month" class="form-control me-3" required>
+          <input min="{{$yearNow -3}}" max="{{$yearNow}}" type="number" placeholder="Year" name="year" class="form-control" required>
+        </div>
+        <button type="submit" class="btn p-0 mt-3 ms-auto"><a href="#" style="pointer-events: none; text-decoration:none;">
+          <i class="fa fa-download me-2"></i> Download </a></button>
+      </form>
+    </div>
+  </div> 
+  <hr>
  <script>
   let msg = '{{Session::get('alert')}}';
   let exist = '{{Session::has('alert')}}';
@@ -36,7 +54,6 @@
                   <label for="month" class="form-label">Month</label>
                   <input min="1" max="12" type="number" name="month" id="month" class="form-control" required>
               </div>
-              <?php $yearNow = date("Y") ?>
               <div class="mb-2">
                   <label for="year" class="form-label">Year</label>
                   <input min={{$yearNow}} max="{{$yearNow + 3}}" type="number" name="year" id="year" class="form-control" required>

@@ -49,6 +49,7 @@ Route::group(['middleware' => ["admin"]], function () {
     Route::post("/salary", [SalaryController::class, "store"]);
     Route::post("/salary/update", [SalaryController::class, "update"]);
     Route::get("/salary/{id}/delete", [SalaryController::class, "destroy"]);
+    Route::get("/salary/export", [SalaryController::class, "createPdf"]);
 
     Route::get("/employees", [EmployeeController::class, "index"]);
     Route::post("/employee", [EmployeeController::class, "store"]);

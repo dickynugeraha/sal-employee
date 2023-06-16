@@ -6,6 +6,8 @@ use App\Models\Salary;
 use App\Http\Requests\StoreSalaryRequest;
 use App\Http\Requests\UpdateSalaryRequest;
 use App\Models\Employee;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 
 class SalaryController extends Controller
 {
@@ -14,9 +16,17 @@ class SalaryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $salaries = Salary::all();
+        $month = $request->get("month");
+        $year = $request->get("year");
+
+        if ($month !== null && $year !== null) {
+            $salaries = Salary::where("month", "=", $month)
+                ->where("year", "=", $year);
+        }
+
         $employees = Employee::with("position")->get();
 
         return view("salary.index", compact("salaries", "employees"));
@@ -27,9 +37,24 @@ class SalaryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function createPdf(Request $request)
     {
-        //
+        $salaries = Salary::all();
+
+        $month = $request->get("month");
+        $year = $request->get("year");
+
+        if ($month && $year) {
+            $salaries = Salary::where("month", "=", $month)->where("year", "=", $year)->get();
+
+            if (count($salaries) == 0) {
+                return redirect()->back()->with("alert", "No data, cannot export pdf!");
+            }
+        }
+
+        $pdf = Pdf::loadView("salary.data", compact("salaries", "month", "year"));
+
+        return $pdf->download("transaction_salaries.pdf");
     }
 
     /**
@@ -42,10 +67,9 @@ class SalaryController extends Controller
     {
         $employee = Employee::where("id", "=", $request->employee_id)->first();
 
-        $totalSalary =
-            $employee->basic_salary +
-            ($employee->basic_salary * $employee->position->bonus) -
-            ($employee->basic_salary * 0.05);
+        $totalSalary = $employee->basic_salary +
+            ($employee->basic_salary * $employee->position->bonus);
+        $totalSalary -= ($totalSalary * 0.05);
 
         Salary::create([
             "employee_id" => $request->employee_id,
